@@ -1,9 +1,10 @@
----
+﻿---
 title: "Worklog Tuần 12"
 date: 2024-01-01
 weight: 2
 chapter: false
 pre: " <b> 1.12 </b> "
+draft: true
 ---
 {{% notice warning %}}
 ⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
@@ -54,5 +55,6 @@ pre: " <b> 1.12 </b> "
 
 * Có khả năng kết nối giữa giao diện web và CLI để quản lý tài nguyên AWS song song.
 * ...
+
 
 
