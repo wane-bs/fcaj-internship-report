@@ -5,55 +5,36 @@ weight: 1
 chapter: false
 pre: " <b> 1.1. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
-
 
 ### Mục tiêu tuần 1:
 
-* Kết nối, làm quen với các thành viên trong First Cloud AI Journey.
-* Hiểu dịch vụ AWS cơ bản, cách dùng console & CLI.
+* Kết nối, làm quen với các thành viên trong First Cloud AI Journey (FCAJ).
+* Kích hoạt thành công tài khoản AWS, xác minh credit hỗ trợ ($100 Credit).
+* Cấu hình hạn mức chi phí (AWS Budgets / Billing Alarms) để tối ưu $100 credit.
+* Nắm vững cách quản trị tài nguyên qua AWS Management Console và AWS CLI.
 
 ### Các công việc cần triển khai trong tuần này:
-| Thứ | Công việc                                                                                                                                                                                   | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu                            |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------------- | ----------------------------------------- |
-| 2   | - Làm quen với các thành viên FCAJ <br> - Đọc và lưu ý các nội quy, quy định tại đơn vị thực tập                                                                                             | 11/08/2025   | 11/08/2025      |
-| 3   | - Tìm hiểu AWS và các loại dịch vụ <br>&emsp; + Compute <br>&emsp; + Storage <br>&emsp; + Networking <br>&emsp; + Database <br>&emsp; + ... <br>                                            | 12/08/2025   | 12/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 4   | - Tạo AWS Free Tier account <br> - Tìm hiểu AWS Console & AWS CLI <br> - **Thực hành:** <br>&emsp; + Tạo AWS account <br>&emsp; + Cài AWS CLI & cấu hình <br> &emsp; + Cách sử dụng AWS CLI | 13/08/2025   | 13/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 5   | - Tìm hiểu EC2 cơ bản: <br>&emsp; + Instance types <br>&emsp; + AMI <br>&emsp; + EBS <br>&emsp; + ... <br> - Các cách remote SSH vào EC2 <br> - Tìm hiểu Elastic IP   <br>                  | 14/08/2025   | 15/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-| 6   | - **Thực hành:** <br>&emsp; + Tạo EC2 instance <br>&emsp; + Kết nối SSH <br>&emsp; + Gắn EBS volume                                                                                         | 15/08/2025   | 15/08/2025      | <https://cloudjourney.awsstudygroup.com/> |
-
+| Thứ | Công việc | Ngày bắt đầu | Ngày hoàn thành | Nguồn tài liệu |
+| --- | --- | --- | --- | --- |
+| 2 | - Làm quen với các thành viên FCAJ <br> - Đọc và lưu ý các nội quy, quy định tại đơn vị thực tập | 11/08/2025 | 11/08/2025 | |
+| 3 | - Phân tích tổng quan AWS và các nhóm dịch vụ nền tảng: <br>&emsp; + Compute (EC2, Lambda) <br>&emsp; + Storage (S3, EBS) <br>&emsp; + Networking (VPC, Route53) <br>&emsp; + Database (RDS, DynamoDB) | 12/08/2025 | 12/08/2025 | <https://cloudjourney.awsstudygroup.com/> |
+| 4 | - Đăng ký tài khoản AWS bằng số điện thoại cá nhân <br> - Kiểm tra & xác minh nhận thành công **$100 AWS Credit** <br> - Khám phá giao diện AWS Billing & Cost Management Console | 13/08/2025 | 13/08/2025 | <https://cloudjourney.awsstudygroup.com/> |
+| 5 | - Tìm hiểu cách thiết lập cảnh báo chi phí (AWS Budgets & Cost Alarms) để kiểm soát tài khoản <br> - Thiết lập hạn mức ngân sách tối ưu cho số tiền $100 credit <br> - Tìm hiểu tổng quan về AWS CLI | 14/08/2025 | 14/08/2025 | <https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/budgets-managing-costs.html> |
+| 6 | - **Thực hành AWS CLI:** <br>&emsp; + Cài đặt AWS CLI v2 <br>&emsp; + Tạo IAM User / Access Key & Secret Key <br>&emsp; + Cấu hình `aws configure` <br>&emsp; + Thực thi lệnh kiểm tra tài nguyên (`aws sts get-caller-identity`, `aws ec2 describe-regions`) | 15/08/2025 | 15/08/2025 | <https://docs.aws.amazon.com/cli/> |
 
 ### Kết quả đạt được tuần 1:
 
-* Hiểu AWS là gì và nắm được các nhóm dịch vụ cơ bản: 
-  * Compute
-  * Storage
-  * Networking 
-  * Database
-  * ...
+* **Tài khoản & Credit:**
+  * Đăng ký và kích hoạt tài khoản AWS thành công với số điện thoại cá nhân.
+  * Nhận thành công **$100 AWS Credit** vào tài khoản.
+  * Nắm vững cách kiểm tra số dư Credit và theo dõi chi tiết trên AWS Billing Console.
 
-* Đã tạo và cấu hình AWS Free Tier account thành công.
+* **Quản trị chi phí & An toàn tài khoản:**
+  * Xác định và thiết lập kế hoạch đặt hạn mức ngân sách (AWS Budgets / CloudWatch Billing Alarms) để tối ưu hóa $100 credit, ngăn ngừa phát sinh chi phí ngoài ý muốn.
 
-* Làm quen với AWS Management Console và biết cách tìm, truy cập, sử dụng dịch vụ từ giao diện web.
-
-* Cài đặt và cấu hình AWS CLI trên máy tính bao gồm:
-  * Access Key
-  * Secret Key
-  * Region mặc định
-  * ...
-
-* Sử dụng AWS CLI để thực hiện các thao tác cơ bản như:
-
-  * Kiểm tra thông tin tài khoản & cấu hình
-  * Lấy danh sách region
-  * Xem dịch vụ EC2
-  * Tạo và quản lý key pair
-  * Kiểm tra thông tin dịch vụ đang chạy
-  * ...
-
-* Có khả năng kết nối giữa giao diện web và CLI để quản lý tài nguyên AWS song song.
-* ...
+* **Làm chủ AWS Console & AWS CLI:**
+  * Thao tác thành thạo trên AWS Management Console.
+  * Cài đặt AWS CLI v2, khởi tạo IAM Access Keys và cấu hình Profile kết nối an toàn.
+  * Thực thi các câu lệnh CLI căn bản để truy vấn thông tin tài khoản, kiểm tra Regions và kiểm soát tài nguyên.
 
 
