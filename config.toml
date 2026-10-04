@@ -1,5 +1,5 @@
 baseURL = "https://wane-bs.github.io/fcaj-internship-report/"
-relativeURLs = false
+relativeURLs = true
 canonifyURLs = false
 defaultContentLanguage = "en"
 
@@ -16,7 +16,7 @@ home = [ "HTML", "RSS", "JSON"]
   # Git hub repo link
   editURL = ""
   description = ""
-  author = "01134wane@gmail.com"
+  author = "trunghieuwane@gmail.com"
   showVisitedLinks = true
   disableBreadcrumb = false
   disableNextPrev = false

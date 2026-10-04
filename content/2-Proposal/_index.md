@@ -3,6 +3,7 @@ title: "Proposal"
 date: 2024-01-01
 weight: 2
 chapter: false
+draft: true
 pre: " <b> 2. </b> "
 ---
 {{% notice warning %}}
