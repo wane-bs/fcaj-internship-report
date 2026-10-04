@@ -11,7 +11,7 @@ chapter: false
 
 &emsp; **Số điện thoại:** 0989888999
 
-&emsp; **Email:** Anguyenvan@gmail.com
+&emsp; **Email:** 01134wane@gmail.com
 
 &emsp; **Trường:** Đại học Sư phạm Kỹ thuật TP.HCM
 

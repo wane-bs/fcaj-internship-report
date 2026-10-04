@@ -17,7 +17,7 @@ chapter: false
 
 &emsp; **Phone Number:** 0989888999 
 
-&emsp; **Email:** Anguyenvan@gmail.com
+&emsp; **Email:** 01134wane@gmail.com
 
 &emsp; **University:** Ho Chi Minh City University of Technology and Education
 
