@@ -1,31 +1,28 @@
 ---
 title: "Blog 2"
-date: 2024-01-01
-weight: 1
+date: 2026-10-19
+weight: 2
 chapter: false
 pre: " <b> 3.2. </b> "
+draft: true
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
 
-# SESSION POLICIES TRONG AMAZON EKS POD IDENTITY
+# TỐI ƯU HÓA CHI PHÍ VÀ BẢO MẬT TRUY CẬP AMAZON S3 VỚI VPC ENDPOINTS
 
-Amazon EKS Pod Identity vừa bổ sung tính năng session policies, cho phép bạn thu hẹp quyền IAM một cách linh hoạt và chính xác cho từng pod mà không cần tạo thêm nhiều IAM roles riêng biệt. Đây là bước tiến quan trọng giúp áp dụng nguyên tắc least privilege hiệu quả hơn trong môi trường Kubernetes quy mô lớn.
+Khi các hệ thống xử lý dữ liệu (Data Lake, Analytics Pipeline) mở rộng trên AWS, lượng dữ liệu trung chuyển giữa máy chủ ảo (EC2, ECS, EKS) và lưu trữ đối tượng Amazon S3 tăng lên nhanh chóng. Việc đi qua cổng Internet Gateway (NAT Gateway) không chỉ tiềm ẩn rủi ro lộ lọt dữ liệu mà còn phát sinh chi phí truyền tải (Data Processing Fee) đáng kể. Giải pháp kiến trúc chuẩn mực được AWS khuyến nghị là sử dụng **Amazon VPC Endpoints**.
 
-Các điểm chính cần nắm:
+### 1. Phân biệt Gateway Endpoint và Interface Endpoint cho S3
 
-* Session policy là một IAM policy inline được chỉ định khi tạo hoặc cập nhật Pod Identity association.
-* Quyền hiệu quả = intersection (giao) giữa permissions của IAM role và session policy → session policy chỉ có thể thu hẹp, không thể mở rộng quyền.
-* Giúp tránh tình trạng over-permissioning khi reuse chung một IAM role cho nhiều workloads có nhu cầu khác nhau.
-* Hỗ trợ cả same-account và cross-account (qua IAM role chaining).
-* Giảm đáng kể số lượng IAM roles cần quản lý, tránh chạm giới hạn quota IAM trong cluster lớn.
-* Cấu hình dễ dàng qua AWS Management Console, AWS CLI hoặc AWS SDK khi tạo association giữa Kubernetes ServiceAccount và IAM role.
+| Tiêu chí | Gateway Endpoint (S3) | Interface Endpoint (S3 - AWS PrivateLink) |
+| :--- | :--- | :--- |
+| **Chi phí** | **Hoàn toàn miễn phí** (0$/giờ, 0$ Data Processing) | Tính phí theo giờ sử dụng và lượng dữ liệu xử lý |
+| **Cơ chế định tuyến** | Cập nhật Route Table trong VPC hướng về S3 Prefix List | Sử dụng Elastic Network Interface (ENI) với Private IP |
+| **Phạm vi truy cập** | Chỉ trong phạm vi VPC cục bộ | Hỗ trợ truy cập từ On-Premises (Direct Connect / VPN) |
+| **Bảo mật** | Gắn Endpoint Policy trực tiếp | Security Group + Endpoint Policy |
 
-Tính năng này đặc biệt hữu ích khi bạn có nhiều ứng dụng chạy trên cùng một IAM role nhưng cần giới hạn quyền khác nhau (ví dụ: một pod chỉ đọc S3 bucket cụ thể, pod khác chỉ gọi một số API nhất định).
+### 2. Best Practices triển khai
+- **Nguyên tắc phân tầng**: Sử dụng Gateway Endpoint cho toàn bộ tài nguyên nội bộ VPC để loại bỏ hoàn toàn chi phí NAT Gateway.
+- **Mở rộng kết nối lai (Hybrid)**: Kết hợp Interface Endpoint để các trung tâm dữ liệu tại chỗ (On-Premises) đẩy trực tiếp dữ liệu vào S3 qua đường truyền riêng.
+- **Endpoint Policy**: Luôn thiết lập chính sách truy cập tối thiểu, chỉ cho phép kết nối đến đúng các S3 Buckets nội bộ của tổ chức.
 
-...Hình ảnh...
-
-...Link...
-
-...Hướng dẫn...
+*(Khung bài viết chuẩn bị đăng trên cộng đồng AWS Study Group)*

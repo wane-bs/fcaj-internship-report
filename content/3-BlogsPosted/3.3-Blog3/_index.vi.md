@@ -1,31 +1,24 @@
 ---
 title: "Blog 3"
-date: 2024-01-01
-weight: 1
+date: 2026-10-19
+weight: 3
 chapter: false
 pre: " <b> 3.3. </b> "
+draft: true
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
 
-# SESSION POLICIES TRONG AMAZON EKS POD IDENTITY
+# XÂY DỰNG SERVERLESS DATA LAKE VỚI AWS GLUE, ATHENA VÀ PARQUET
 
-Amazon EKS Pod Identity vừa bổ sung tính năng session policies, cho phép bạn thu hẹp quyền IAM một cách linh hoạt và chính xác cho từng pod mà không cần tạo thêm nhiều IAM roles riêng biệt. Đây là bước tiến quan trọng giúp áp dụng nguyên tắc least privilege hiệu quả hơn trong môi trường Kubernetes quy mô lớn.
+Trong kỷ nguyên dữ liệu lớn (Big Data), việc vận hành các cụm máy chủ phân tích truyền thống (Hadoop, Spark cluster) đòi hỏi chi phí bảo trì và nhân lực rất lớn. Mô hình **Serverless Data Lake** trên AWS giúp các kỹ sư dữ liệu loại bỏ hoàn toàn gánh nặng quản lý máy chủ mà vẫn đảm bảo hiệu năng truy vấn hàng terabyte dữ liệu trong vài giây.
 
-Các điểm chính cần nắm:
+### 1. Kiến trúc 3 tầng chuẩn mực (Modern Data Architecture)
+- **Tầng Lưu trữ (S3 Storage Tier)**: Phân tách rõ ràng giữa *Raw Zone* (dữ liệu thô JSON/CSV), *Clean Zone* (dữ liệu đã lọc sạch), và *Curated Zone* (dữ liệu định dạng Parquet nén Snappy).
+- **Tầng Khám phá & Metadata (AWS Glue Data Catalog)**: Tự động trích xuất schema qua Glue Crawlers, hỗ trợ đồng bộ schema evolution khi cấu trúc dữ liệu nguồn thay đổi.
+- **Tầng Truy vấn Serverless (Amazon Athena)**: Thực thi truy vấn SQL ANSI trực tiếp trên S3 mà không cần nạp vào cơ sở dữ liệu vật lý.
 
-* Session policy là một IAM policy inline được chỉ định khi tạo hoặc cập nhật Pod Identity association.
-* Quyền hiệu quả = intersection (giao) giữa permissions của IAM role và session policy → session policy chỉ có thể thu hẹp, không thể mở rộng quyền.
-* Giúp tránh tình trạng over-permissioning khi reuse chung một IAM role cho nhiều workloads có nhu cầu khác nhau.
-* Hỗ trợ cả same-account và cross-account (qua IAM role chaining).
-* Giảm đáng kể số lượng IAM roles cần quản lý, tránh chạm giới hạn quota IAM trong cluster lớn.
-* Cấu hình dễ dàng qua AWS Management Console, AWS CLI hoặc AWS SDK khi tạo association giữa Kubernetes ServiceAccount và IAM role.
+### 2. Các đòn bẩy FinOps tối ưu chi phí
+- **Chuyển đổi sang Parquet**: Tiết kiệm 80-90% dung lượng lưu trữ so với text/CSV.
+- **Partitioning theo thời gian**: Giảm 95% lượng dữ liệu quét (Scanned Bytes) trên Athena, cắt giảm trực tiếp chi phí truy vấn ($5 / TB scan).
+- **Tích hợp QuickSight**: Kết nối trực tiếp Athena làm Data Source để trực quan hóa báo cáo BI tức thì.
 
-Tính năng này đặc biệt hữu ích khi bạn có nhiều ứng dụng chạy trên cùng một IAM role nhưng cần giới hạn quyền khác nhau (ví dụ: một pod chỉ đọc S3 bucket cụ thể, pod khác chỉ gọi một số API nhất định).
-
-...Hình ảnh...
-
-...Link...
-
-...Hướng dẫn...
+*(Khung bài viết chuẩn bị đăng trên cộng đồng AWS Study Group)*

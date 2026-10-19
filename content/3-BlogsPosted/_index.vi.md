@@ -14,10 +14,10 @@ pre: " <b> 3. </b> "
 Tại đây sẽ là phần liệt kê, giới thiệu các blogs mà các bạn đã đăng trên [AWS Study Group](https://www.facebook.com/groups/awsstudygroupfcj). Ví dụ:
 
 ###  [Blog 1 - SESSION POLICIES TRONG AMAZON EKS POD IDENTITY](3.1-Blog1/)
-Blog này giới thiệu Amazon EKS Pod Identity vừa bổ sung tính năng session policies, cho phép bạn thu hẹp quyền IAM một cách linh hoạt và chính xác cho từng pod mà không cần tạo thêm nhiều IAM roles riêng biệt. Đây là bước tiến quan trọng giúp áp dụng nguyên tắc least privilege hiệu quả hơn trong môi trường Kubernetes quy mô lớn.
+Giới thiệu tính năng Session Policies trong EKS Pod Identity giúp thu hẹp quyền IAM linh hoạt cho từng Pod và áp dụng nguyên tắc Least Privilege hiệu quả.
 
-###  [Blog 2 - ...](3.2-Blog2/)
-Blog này giới thiệu Amazon EKS Pod Identity vừa bổ sung tính năng session policies, cho phép bạn thu hẹp quyền IAM một cách linh hoạt và chính xác cho từng pod mà không cần tạo thêm nhiều IAM roles riêng biệt. Đây là bước tiến quan trọng giúp áp dụng nguyên tắc least privilege hiệu quả hơn trong môi trường Kubernetes quy mô lớn.
+###  [Blog 2 - TỐI ƯU HÓA CHI PHÍ VÀ BẢO MẬT TRUY CẬP AMAZON S3 VỚI VPC ENDPOINTS](3.2-Blog2/)
+Phân tích kiến trúc kết hợp Gateway Endpoint và Interface Endpoint (AWS PrivateLink) cho Amazon S3, loại bỏ hoàn toàn chi phí NAT Gateway và bảo vệ luồng dữ liệu Analytics.
 
-###  [Blog 3 - ...](3.3-Blog3/)
-Blog này giới thiệu Amazon EKS Pod Identity vừa bổ sung tính năng session policies, cho phép bạn thu hẹp quyền IAM một cách linh hoạt và chính xác cho từng pod mà không cần tạo thêm nhiều IAM roles riêng biệt. Đây là bước tiến quan trọng giúp áp dụng nguyên tắc least privilege hiệu quả hơn trong môi trường Kubernetes quy mô lớn.
+###  [Blog 3 - XÂY DỰNG SERVERLESS DATA LAKE VỚI AWS GLUE, ATHENA VÀ PARQUET](3.3-Blog3/)
+Thiết kế kiến trúc Data Lake 3 tầng (Raw/Clean/Curated), tự động crawl metadata với AWS Glue Data Catalog và thực thi truy vấn SQL tối ưu chi phí qua Amazon Athena.

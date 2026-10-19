@@ -1,31 +1,24 @@
 ---
 title: "Blog 3"
-date: 2024-01-01
-weight: 1
+date: 2026-10-19
+weight: 3
 chapter: false
 pre: " <b> 3.3. </b> "
+draft: true
 ---
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
 
-# SESSION POLICIES IN AMAZON EKS POD IDENTITY
+# BUILDING A SERVERLESS DATA LAKE WITH AWS GLUE, ATHENA, AND PARQUET
 
-Amazon EKS Pod Identity has recently added the session policies feature, allowing you to narrow IAM permissions flexibly and precisely for each pod without needing to create many separate IAM roles. This is an important step forward that helps apply the principle of least privilege more effectively in large-scale Kubernetes environments.
+In modern Big Data engineering, operating traditional compute clusters (Hadoop/Spark) introduces significant infrastructure management overhead. A **Serverless Data Lake** architecture on AWS enables data engineers to eliminate server management while executing sub-second SQL queries across terabytes of data.
 
-Key points to know:
+### 1. The Standard Three-Tier Lakehouse Architecture
+- **Storage Tier (Amazon S3)**: Clear separation of *Raw Zone* (raw JSON/CSV), *Clean Zone* (validated data), and *Curated Zone* (columnar Parquet format with Snappy compression).
+- **Metadata & Catalog Tier (AWS Glue Data Catalog)**: Automated schema discovery using Glue Crawlers with schema evolution handling.
+- **Serverless Query Tier (Amazon Athena)**: Interactive ANSI SQL execution directly over S3 objects without pre-loading databases.
 
-* A session policy is an inline IAM policy specified when creating or updating a Pod Identity association.
-* Effective permissions = intersection between the IAM role permissions and the session policy → the session policy can only narrow permissions, not expand them.
-* Helps avoid over-permissioning when reusing a single IAM role for multiple workloads with different needs.
-* Supports both same-account and cross-account (via IAM role chaining).
-* Significantly reduces the number of IAM roles that need to be managed, helping avoid hitting IAM quota limits in large clusters.
-* Easily configured through the AWS Management Console, AWS CLI, or AWS SDK when creating an association between a Kubernetes ServiceAccount and an IAM role.
+### 2. Key FinOps Optimization Levers
+- **Columnar Parquet Conversion**: 80-90% storage reduction compared to raw text formats.
+- **Time-based Partitioning**: Reduces data scanned by Athena by up to 95%, directly minimizing query costs ($5 per TB scanned).
+- **QuickSight Integration**: Seamlessly connects Athena as a data source for interactive executive dashboards.
 
-This feature is especially useful when you have many applications running on the same IAM role but need different permission restrictions (for example: one pod only reads a specific S3 bucket, another pod only calls certain APIs).
-
-...Image...
-
-...Link...
-
-...Guide...
+*(Draft framework for AWS Study Group Community publication)*

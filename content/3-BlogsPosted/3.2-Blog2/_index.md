@@ -1,31 +1,28 @@
 ---
 title: "Blog 2"
-date: 2024-01-01
-weight: 1
+date: 2026-10-19
+weight: 2
 chapter: false
 pre: " <b> 3.2. </b> "
+draft: true
 ---
-{{% notice warning %}}
-⚠️ **Note:** The information below is for reference purposes only. Please **do not copy verbatim** for your report, including this warning.
-{{% /notice %}}
 
-# SESSION POLICIES IN AMAZON EKS POD IDENTITY
+# OPTIMIZING COST AND SECURITY FOR AMAZON S3 ACCESS WITH VPC ENDPOINTS
 
-Amazon EKS Pod Identity has recently added the session policies feature, allowing you to narrow IAM permissions flexibly and precisely for each pod without needing to create many separate IAM roles. This is an important step forward that helps apply the principle of least privilege more effectively in large-scale Kubernetes environments.
+As data pipelines and analytics workloads expand on AWS, data transfer between compute clusters (EC2, ECS, EKS) and Amazon S3 scales rapidly. Routing this traffic through Internet Gateways or NAT Gateways creates security exposure and high data processing fees. The standard Well-Architected solution recommended by AWS is **Amazon VPC Endpoints**.
 
-Key points to know:
+### 1. Gateway Endpoint vs Interface Endpoint for S3
 
-* A session policy is an inline IAM policy specified when creating or updating a Pod Identity association.
-* Effective permissions = intersection between the IAM role permissions and the session policy → the session policy can only narrow permissions, not expand them.
-* Helps avoid over-permissioning when reusing a single IAM role for multiple workloads with different needs.
-* Supports both same-account and cross-account (via IAM role chaining).
-* Significantly reduces the number of IAM roles that need to be managed, helping avoid hitting IAM quota limits in large clusters.
-* Easily configured through the AWS Management Console, AWS CLI, or AWS SDK when creating an association between a Kubernetes ServiceAccount and an IAM role.
+| Criteria | Gateway Endpoint (S3) | Interface Endpoint (S3 - AWS PrivateLink) |
+| :--- | :--- | :--- |
+| **Cost** | **100% Free** ($0/hour, $0 Data Processing) | Hourly ENI fee + data processing fee |
+| **Routing Mechanism** | Updates VPC Route Tables to S3 Prefix List | Uses Elastic Network Interface (ENI) with Private IP |
+| **Access Scope** | Within local VPC only | Supports On-Premises via Direct Connect or Site-to-Site VPN |
+| **Security Controls** | Endpoint Policy attached directly | Security Groups + Endpoint Policy |
 
-This feature is especially useful when you have many applications running on the same IAM role but need different permission restrictions (for example: one pod only reads a specific S3 bucket, another pod only calls certain APIs).
+### 2. Implementation Best Practices
+- **Tiered Approach**: Use Gateway Endpoints for all in-VPC compute to eliminate NAT Gateway fees completely.
+- **Hybrid Ingestion**: Use Interface Endpoints for secure on-premises ETL pipelines pushing directly to S3.
+- **Endpoint Policy**: Enforce least-privilege policies restricting access strictly to designated internal buckets.
 
-...Image...
-
-...Link...
-
-...Guide...
+*(Draft framework for AWS Study Group Community publication)*

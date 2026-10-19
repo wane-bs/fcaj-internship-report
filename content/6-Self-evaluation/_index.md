@@ -11,10 +11,9 @@ pre: " <b> 6. </b> "
 ⚠️ **Note:** The information below is for reference purposes only. Please **do not copy it verbatim** into your report, including this warning.
 {{% /notice %}}
 
-During my internship at **[Company/Organization Name]** from **[start date]** to **[end date]**, I had the opportunity to learn, practice, and apply the knowledge acquired in school to a real-world working environment.  
-I participated in **[briefly describe the main project or task]**, through which I improved my skills in **[list skills: programming, analysis, reporting, communication, etc.]**.  
+During my participation in the **First Cloud AI Journey (FCAJ)** program starting from **August 12, 2026**, I had the opportunity to learn, practice, and apply my academic knowledge in Financial Technology from Ho Chi Minh City University of Industry and Trade (HUIT) to real-world AWS cloud infrastructure.  
+I focused on the **Data & Analytics Track**, architecting Serverless Data Lakes, optimizing network transfer fees with VPC Endpoints, orchestrating automated ETL workflows via AWS Glue, querying datasets with Amazon Athena, and delivering interactive BI dashboards using Amazon QuickSight. This hands-on journey dramatically enhanced my engineering mindset, IAM access governance, pipeline automation, and production troubleshooting skills.  
 
-In terms of work ethic, I always strived to complete tasks well, complied with workplace regulations, and actively engaged with colleagues to improve work efficiency.
 
 To objectively reflect on my internship period, I would like to evaluate myself based on the following criteria:
 

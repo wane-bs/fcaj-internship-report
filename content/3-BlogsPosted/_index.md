@@ -14,10 +14,10 @@ pre: " <b> 3. </b> "
 This section will list and introduce the blogs you have posted to [AWS Study Group](https://www.facebook.com/groups/awsstudygroupfcj). For example:
 
 ###  [Blog 1 - SESSION POLICIES IN AMAZON EKS POD IDENTITY](3.1-Blog1/)
-This blog introduces the newly added session policies feature in Amazon EKS Pod Identity, which allows you to narrow IAM permissions flexibly and precisely for each pod without needing to create multiple separate IAM roles. This is an important step forward that helps apply the principle of least privilege more effectively in large-scale Kubernetes environments.
+Deep dive into Amazon EKS Pod Identity Session Policies, exploring how to granularly scope down IAM permissions for Kubernetes Pods under the Least Privilege principle.
 
-###  [Blog 2 - ...](3.2-Blog2/)
-This blog introduces the newly added session policies feature in Amazon EKS Pod Identity, which allows you to narrow IAM permissions flexibly and precisely for each pod without needing to create multiple separate IAM roles. This is an important step forward that helps apply the principle of least privilege more effectively in large-scale Kubernetes environments.
+###  [Blog 2 - OPTIMIZING COST AND SECURITY FOR AMAZON S3 ACCESS WITH VPC ENDPOINTS](3.2-Blog2/)
+Architectural review of S3 Gateway Endpoints vs Interface Endpoints (AWS PrivateLink), eliminating NAT Gateway data processing fees and isolating analytics ingestion.
 
-###  [Blog 3 - ...](3.3-Blog3/)
-This blog introduces the newly added session policies feature in Amazon EKS Pod Identity, which allows you to narrow IAM permissions flexibly and precisely for each pod without needing to create multiple separate IAM roles. This is an important step forward that helps apply the principle of least privilege more effectively in large-scale Kubernetes environments.
+###  [Blog 3 - BUILDING A SERVERLESS DATA LAKE WITH AWS GLUE, ATHENA, AND PARQUET](3.3-Blog3/)
+Designing a modular 3-tier Lakehouse on S3, automated schema discovery with AWS Glue Data Catalog, and cost-efficient interactive querying using Amazon Athena.
