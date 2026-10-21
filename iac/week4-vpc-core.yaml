@@ -1,0 +1,153 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'FCAJ Week 4: Multi-AZ Custom VPC Architecture (Zero-Cost Core Stack)'
+
+Parameters:
+  VpcCidr:
+    Type: String
+    Default: '10.10.0.0/16'
+    Description: 'CIDR block for Custom VPC'
+  EnvironmentName:
+    Type: String
+    Default: 'ASG'
+    Description: 'Prefix tag for VPC resources'
+
+Resources:
+  # 1. Custom VPC
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidr
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+
+  # 2. Internet Gateway & Attachment
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-IGW'
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  # 3. Two Public Subnets (AZ1: ap-southeast-1a, AZ2: ap-southeast-1b)
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: '10.10.1.0/24'
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-Public-Subnet-1'
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [1, !GetAZs '']
+      CidrBlock: '10.10.2.0/24'
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-Public-Subnet-2'
+
+  # 4. Two Private Subnets (AZ1: ap-southeast-1a, AZ2: ap-southeast-1b)
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: '10.10.3.0/24'
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-Private-Subnet-1'
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [1, !GetAZs '']
+      CidrBlock: '10.10.4.0/24'
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-Private-Subnet-2'
+
+  # 5. Public Route Table & Association
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-Public-RT'
+
+  PublicDefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: '0.0.0.0/0'
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref PublicRouteTable
+
+  # 6. Private Route Table & Association (Default to local VPC routing)
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub '${EnvironmentName}-Private-RT'
+
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      RouteTableId: !Ref PrivateRouteTable
+
+  PrivateSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet2
+      RouteTableId: !Ref PrivateRouteTable
+
+Outputs:
+  VpcId:
+    Value: !Ref VPC
+    Description: 'ID of the Custom VPC'
+    Export:
+      Name: !Sub '${EnvironmentName}-VpcId'
+  PublicSubnet1Id:
+    Value: !Ref PublicSubnet1
+    Description: 'Public Subnet 1 ID'
+  PublicSubnet2Id:
+    Value: !Ref PublicSubnet2
+    Description: 'Public Subnet 2 ID'
+  PrivateSubnet1Id:
+    Value: !Ref PrivateSubnet1
+    Description: 'Private Subnet 1 ID'
+  PrivateSubnet2Id:
+    Value: !Ref PrivateSubnet2
+    Description: 'Private Subnet 2 ID'

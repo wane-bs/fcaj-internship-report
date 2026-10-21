@@ -20,7 +20,12 @@ scripts/
 *.swp
 *.swo
 
-# Environment variables
+# Environment variables & Credentials
 .env
 .env.local
 .agents/
+*.pem
+*.ppk
+*.key
+*credentials*.csv
+credentials/

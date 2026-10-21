@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'FCAJ Week 3: IAM Least Privilege and STS Role Switching Lab'
+
+Parameters:
+  OperatorPassword:
+    Type: String
+    NoEcho: true
+    MinLength: 8
+    Description: 'Initial password for OperatorUser (must be passed securely at deploy time)'
+
+
+Resources:
+  # 1. Admin Group
+  AdminGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: AdminGroup
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+
+  # 2. Admin Role for Delegation & Role Switching
+  AdminRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: AdminRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+            Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+
+  # 3. Operator User (Restricted by default with Console Access)
+  OperatorUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: OperatorUser
+      LoginProfile:
+        Password: !Ref OperatorPassword
+        PasswordResetRequired: false
+
+  # 4. Inline Policy allowing OperatorUser to Assume AdminRole
+  OperatorAssumeAdminPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: AllowOperatorAssumeAdminRole
+      Users:
+        - !Ref OperatorUser
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: ExplicitAssumeAdminRole
+            Effect: Allow
+            Action: 'sts:AssumeRole'
+            Resource: !GetAtt AdminRole.Arn
+
+Outputs:
+  AdminRoleArn:
+    Value: !GetAtt AdminRole.Arn
+    Description: 'ARN of AdminRole for role switching'
+  OperatorUserName:
+    Value: !Ref OperatorUser
+    Description: 'Username of Operator'
