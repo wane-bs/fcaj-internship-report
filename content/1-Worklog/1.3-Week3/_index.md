@@ -153,7 +153,7 @@ Dang goi lenh STS AssumeRole qua profile fcaj-admin...
 
 === STS AssumeRole THANH CONG! ===
 Assumed Role User ARN : arn:aws:sts::658302145298:assumed-role/AdminRole/FCAJ-OperatorSession
-Temporary AccessKeyId : ASIAZSRO5SMJNVTCHDQG
+Temporary AccessKeyId : ASIA**************** (REDACTED)
 Expiration Time       : 2026-10-21T04:53:49+00:00
 
 Da san sang phan quyen tam thoi cho OperatorUser!
