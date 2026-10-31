@@ -1,0 +1,143 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  FCAJ Week 6: Relational Master Dimension Store (Amazon RDS PostgreSQL) & AWS Secrets Manager.
+  Deploys an isolated Multi-AZ DB Subnet Group across private subnets,
+  generates a random master password in AWS Secrets Manager, and launches a secure db.t4g.micro instance.
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Default: vpc-0192f88a9d299fc9b
+    Description: VPC ID of the parent Week 4 VPC.
+
+  PrivateSubnet1Id:
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-0dd99457c6d5da2c0
+    Description: Private Subnet 1 (us-east-1a) for DB Subnet Group.
+
+  PrivateSubnet2Id:
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-01d4933ac418e0b6a
+    Description: Private Subnet 2 (us-east-1b) for DB Subnet Group.
+
+  WorkerSecurityGroupId:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Security Group ID of the Week 5 Worker Node to grant PostgreSQL access.
+
+  DbInstanceClass:
+    Type: String
+    Default: db.t4g.micro
+    AllowedValues: [db.t3.micro, db.t4g.micro, db.t4g.small]
+    Description: Free-tier / Cost-optimized compute shape for RDS PostgreSQL.
+
+  AllocatedStorageGB:
+    Type: Number
+    Default: 20
+    MinValue: 20
+    MaxValue: 100
+    Description: Initial allocated storage in GB (gp3).
+
+Resources:
+  # 1. AWS Secrets Manager Secret for Master DB Credentials
+  DatabaseSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub 'fcaj-rds-postgres-credentials-${AWS::StackName}'
+      Description: Generated master credentials for FCAJ Financial Metadata Store
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "fcaj_admin"}'
+        GenerateStringKey: password
+        PasswordLength: 24
+        ExcludeCharacters: "\"'/@\\"
+      Tags:
+        - Key: Project
+          Value: FCAJ
+        - Key: Purpose
+          Value: MasterMetadataStore
+
+  # 2. RDS DB Subnet Group spanning Multi-AZ Private Subnets
+  DatabaseSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupName: !Sub 'fcaj-db-subnet-group-${AWS::StackName}'
+      DBSubnetGroupDescription: Multi-AZ DB Subnet Group spanning Private Subnet 1 and 2
+      SubnetIds:
+        - !Ref PrivateSubnet1Id
+        - !Ref PrivateSubnet2Id
+      Tags:
+        - Key: Name
+          Value: ASG-DB-Subnet-Group
+        - Key: Project
+          Value: FCAJ
+
+  # 3. RDS Security Group (Strict Inbound: Port 5432 exclusively from Worker SG)
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for PostgreSQL RDS (Port 5432 only from Worker Node)
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: !Ref WorkerSecurityGroupId
+          Description: Allow PostgreSQL client connections from the Ingestion Worker
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: ASG-RDS-PostgreSQL-SG
+        - Key: Project
+          Value: FCAJ
+
+  # 4. Amazon RDS PostgreSQL Database Instance
+  MetadataDatabaseInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: fcaj-metadata-store
+      Engine: postgres
+      EngineVersion: '16.3'
+      DBInstanceClass: !Ref DbInstanceClass
+      AllocatedStorage: !Ref AllocatedStorageGB
+      StorageType: gp3
+      PubliclyAccessible: false
+      MultiAZ: false
+      DBSubnetGroupName: !Ref DatabaseSubnetGroup
+      VPCSecurityGroups:
+        - !Ref DatabaseSecurityGroup
+      MasterUsername:
+        !Join ['', ['{{resolve:secretsmanager:', !Ref DatabaseSecret, ':SecretString:username}}']]
+      MasterUserPassword:
+        !Join ['', ['{{resolve:secretsmanager:', !Ref DatabaseSecret, ':SecretString:password}}']]
+      DBName: fcaj_metadata
+      BackupRetentionPeriod: 1
+      DeletionProtection: false
+      AutoMinorVersionUpgrade: true
+      StorageEncrypted: true
+      Tags:
+        - Key: Name
+          Value: ASG-Financial-Metadata-Store
+        - Key: Project
+          Value: FCAJ
+
+Outputs:
+  DatabaseEndpoint:
+    Description: Connection endpoint hostname for PostgreSQL
+    Value: !GetAtt MetadataDatabaseInstance.Endpoint.Address
+    Export:
+      Name: !Sub '${AWS::StackName}-DatabaseEndpoint'
+
+  DatabasePort:
+    Description: Port for PostgreSQL connection
+    Value: !GetAtt MetadataDatabaseInstance.Endpoint.Port
+    Export:
+      Name: !Sub '${AWS::StackName}-DatabasePort'
+
+  SecretArn:
+    Description: ARN of the Database Credentials Secret
+    Value: !Ref DatabaseSecret
+    Export:
+      Name: !Sub '${AWS::StackName}-SecretARN'

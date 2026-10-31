@@ -1,0 +1,157 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >
+  FCAJ Week 5: EC2 Data Ingestion Worker & EBS Staging Cache Volume.
+  Deploys an Amazon Linux 2023 t3.micro instance into ASG-Private-Subnet-1,
+  attached with a 20GB gp3 EBS Staging Volume, governed by IAM SSM Session Manager (Zero-SSH).
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Default: vpc-0192f88a9d299fc9b
+    Description: VPC ID of the parent Week 4 VPC.
+
+  SubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Default: subnet-0dd99457c6d5da2c0
+    Description: Private Subnet 1 ID (us-east-1a) for the worker instance.
+
+  AmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64
+    Description: SSM Parameter store path resolving the latest Amazon Linux 2023 AMI.
+
+  InstanceType:
+    Type: String
+    Default: t3.micro
+    AllowedValues: [t3.nano, t3.micro, t3.small, t4g.micro]
+    Description: Free-tier eligible compute shape.
+
+Resources:
+  # 1. IAM Role & Instance Profile for Systems Manager (SSM)
+  WorkerIAMRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: FCAJ-EC2-Ingestion-Worker-Role
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Tags:
+        - Key: Project
+          Value: FCAJ
+        - Key: Environment
+          Value: Development
+
+  WorkerInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: FCAJ-EC2-Ingestion-Worker-Profile
+      Roles:
+        - !Ref WorkerIAMRole
+
+  # 2. Security Group for Worker Node (Strict Egress only, Zero Inbound Ports)
+  WorkerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for FCAJ Data Ingestion Worker (Zero Inbound Open Ports)
+      VpcId: !Ref VpcId
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          FromPort: -1
+          ToPort: -1
+          CidrIp: 0.0.0.0/0
+          Description: Allow outbound traffic for package repos, VPC endpoints, and AWS APIs.
+      Tags:
+        - Key: Name
+          Value: ASG-Worker-SG
+        - Key: Project
+          Value: FCAJ
+
+  # 3. EBS Staging Volume (20GB gp3, Staging buffer for Financial Time-Series)
+  StagingEbsVolume:
+    Type: AWS::EC2::Volume
+    Properties:
+      AvailabilityZone: us-east-1a
+      Size: 20
+      VolumeType: gp3
+      Iops: 3000
+      Throughput: 125
+      Encrypted: true
+      Tags:
+        - Key: Name
+          Value: ASG-Staging-Cache-EBS
+        - Key: Purpose
+          Value: IngestionStagingCache
+        - Key: Project
+          Value: FCAJ
+
+  # 4. Amazon EC2 Ingestion Worker Instance
+  IngestionWorkerInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: !Ref InstanceType
+      ImageId: !Ref AmiId
+      IamInstanceProfile: !Ref WorkerInstanceProfile
+      SubnetId: !Ref SubnetId
+      SecurityGroupIds:
+        - !Ref WorkerSecurityGroup
+      AvailabilityZone: us-east-1a
+      MetadataOptions:
+        HttpTokens: required
+        HttpPutResponseHopLimit: 1
+        HttpEndpoint: enabled
+      UserData:
+        Fn::Base64: |
+          #!/usr/bin/env bash
+          set -euo pipefail
+          exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+
+          echo "=== [FCAJ Week 5] Initializing Data Ingestion Worker Environment ==="
+          dnf update -y
+          dnf install -y python3.11 python3.11-pip git jq
+
+          # Configure staging mount directory
+          mkdir -p /data/staging
+          chmod 775 /data/staging
+
+          echo "=== Environment preparation completed successfully ==="
+      Tags:
+        - Key: Name
+          Value: ASG-Data-Ingestion-Worker
+        - Key: Role
+          Value: FinancialTime-SeriesCrawler
+        - Key: Project
+          Value: FCAJ
+
+  # 5. Attachment of EBS Staging Volume to EC2 Instance
+  StagingVolumeAttachment:
+    Type: AWS::EC2::VolumeAttachment
+    Properties:
+      Device: /dev/xvdf
+      InstanceId: !Ref IngestionWorkerInstance
+      VolumeId: !Ref StagingEbsVolume
+
+Outputs:
+  WorkerInstanceId:
+    Description: ID of the Ingestion Worker EC2 Instance
+    Value: !Ref IngestionWorkerInstance
+    Export:
+      Name: !Sub '${AWS::StackName}-WorkerInstanceID'
+
+  WorkerSecurityGroupId:
+    Description: ID of the Worker Security Group
+    Value: !Ref WorkerSecurityGroup
+    Export:
+      Name: !Sub '${AWS::StackName}-WorkerSecurityGroupID'
+
+  StagingVolumeId:
+    Description: ID of the attached 20GB gp3 EBS Volume
+    Value: !Ref StagingEbsVolume
+    Export:
+      Name: !Sub '${AWS::StackName}-StagingVolumeID'
+
