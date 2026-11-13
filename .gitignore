@@ -28,4 +28,11 @@ scripts/
 *.ppk
 *.key
 *credentials*.csv
-credentials/
+credentials/
+
+# External Thesis Reference (Local Symlink)
+thesis_ref
+.agents/thesis
+
+# Local Handover Master Document (Do not commit to GitHub)
+00_FCAJ_HANDOVER_MASTER.md

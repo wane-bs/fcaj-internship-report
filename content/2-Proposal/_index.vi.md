@@ -130,7 +130,7 @@ flowchart TD
 
 ### 5. Lộ trình Triển khai Chi tiết (12-Week Implementation Roadmap)
 
-Lộ trình triển khai được phân bổ và đối chiếu trực tiếp với 12 tuần thực hành của đề án:
+Lộ trình triển khai được phân bổ và đối chiếu trực tiếp với 12 tuần thực hành của đề án. Từ Tuần 7 đến Tuần 12, đề án đã được tổng hợp hoàn chỉnh với nền tảng tài chính định lượng của Khóa luận Tốt nghiệp K14 FinTech (*"Ứng dụng Machine Learning trong dự báo rủi ro đuôi cho cổ phiếu và danh mục ngành ngân hàng tại Việt Nam theo chuẩn Basel III"*) thành bản đặc tả kiến trúc đám mây chuẩn mực tại đường dẫn kho `docs/scientific-to-cloud-architecture-framework.md` (truy cập trực tuyến: **[`/docs/scientific-to-cloud-architecture-framework.md`](/docs/scientific-to-cloud-architecture-framework.md)**).
 
 | Giai đoạn | Tuần Worklog | Nội dung Triển khai Kỹ thuật | Trạng thái |
 | :--- | :---: | :--- | :---: |
@@ -140,12 +140,12 @@ Lộ trình triển khai được phân bổ và đối chiếu trực tiếp v�
 | | Tuần 4 | Thiết kế và triển khai kiến trúc mạng ảo Amazon Custom VPC Multi-AZ phân tầng bảo mật. | **Hoàn thành** |
 | **Giai đoạn 2: Thu thập Dữ liệu & Lưu trữ Quan hệ** | Tuần 5 | Khởi tạo EC2 Data Ingestion Worker trong Private Subnet, cấu hình User Data tự động hóa, gắn thêm EBS Volume 20GB lưu cache staging, thực hành quy trình phục hồi Key Pair. | **Hoàn thành** |
 | | Tuần 6 | Triển khai Master Dimension Store (Amazon RDS PostgreSQL) lưu trữ `Dim_Asset` & `Dim_Date`, bảo mật thông tin đăng nhập tự động qua AWS Secrets Manager. | **Hoàn thành** |
-| **Giai đoạn 3: Xây dựng Medallion Data Lakehouse** | Tuần 7 | Xây dựng kiến trúc Data Lake S3 3 tầng (Bronze/Silver/Gold), cấu hình Gateway VPC Endpoint và siết chặt Bucket Policy. | *Kế hoạch* |
-| | Tuần 8 | Tự động hóa trích xuất metadata với AWS Glue Data Catalog, triển khai Glue ETL Job chuyển đổi Parquet và phân vùng logic. | *Kế hoạch* |
-| **Giai đoạn 4: Phân tích Serverless & Phục vụ Real-time** | Tuần 9 | Tối ưu hóa truy vấn phân tích định lượng tài chính với Amazon Athena, áp dụng CTAS và đo lường tỷ lệ tiết kiệm dung lượng quét (>85%). | *Kế hoạch* |
-| | Tuần 10 | Xây dựng Real-Time Financial Feature Store trên Amazon DynamoDB (Single-Table Design), tích hợp Python Boto3 SDK nạp và truy vấn dữ liệu độ trễ <10ms. | *Kế hoạch* |
-| **Giai đoạn 5: Trực quan hóa, AI & Nghiệm thu** | Tuần 11 | Thiết kế Executive Financial Risk Dashboard trên Amazon QuickSight kết nối trực tiếp Athena/S3. | *Kế hoạch* |
-| | Tuần 12 | Ứng dụng Generative AI (Amazon Bedrock / SageMaker) tóm tắt rủi ro thị trường, kiểm toán FinOps tổng thể, hoàn thiện hồ sơ dự án FCAJ. | *Kế hoạch* |
+| **Giai đoạn 3: Xây dựng Medallion Data Lakehouse** | Tuần 7 | Xây dựng kiến trúc Data Lake S3 3 tầng (Bronze/Silver/Gold), cấu hình Gateway VPC Endpoint ($0 phí NAT) và siết chặt Bucket Policy TLS 1.2+. | **Đặc tả Kiến trúc** |
+| | Tuần 8 | Tự động hóa trích xuất metadata với AWS Glue Data Catalog, triển khai Glue PySpark ETL tính toán 18 đặc trưng trễ $t-1$ (Zero Look-Ahead Bias). | **Đặc tả Kiến trúc** |
+| **Giai đoạn 4: Phân tích Serverless & Phục vụ Real-time** | Tuần 9 | Tối ưu hóa truy vấn phân tích định lượng tài chính với Amazon Athena, áp dụng CTAS, Partition Projection và tiết kiệm dung lượng quét (>85%). | **Đặc tả Kiến trúc** |
+| | Tuần 10 | Xây dựng Real-Time Financial Feature Store trên Amazon DynamoDB (Single-Table Design), nạp và phục vụ truy vấn Boto3 độ trễ <10ms. | **Đặc tả Kiến trúc** |
+| **Giai đoạn 5: Trực quan hóa, AI & Nghiệm thu** | Tuần 11 | Thiết kế Executive Financial Risk Dashboard trên Amazon QuickSight kết nối trực tiếp Athena/SPICE (Đèn tín hiệu Basel 25X/1V/0Đ & theo dõi NAV). | **Đặc tả Kiến trúc** |
+| | Tuần 12 | Ứng dụng Generative AI Amazon Bedrock Claude 3.5 Sonnet RAG tóm tắt rủi ro thị trường, kiểm toán FinOps tổng thể (<$10/tháng), hoàn thiện hồ sơ FCAJ. | **Đặc tả Kiến trúc** |
 
 ---
 

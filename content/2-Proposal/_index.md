@@ -130,6 +130,8 @@ Inheriting the verified star schema from the quantitative finance data model:
 
 ### 5. Implementation Roadmap (Aligned with 12-Week Worklog)
 
+The implementation roadmap aligns directly across the 12 weekly milestones of the FCAJ program. Weeks 7 through 12 have been synthesized with the quantitative finance foundations of the K14 FinTech thesis (*"Ứng dụng Machine Learning trong dự báo rủi ro đuôi cho cổ phiếu và danh mục ngành ngân hàng tại Việt Nam theo chuẩn Basel III"*) into a production-grade AWS architecture specification, detailed in repository file `docs/scientific-to-cloud-architecture-framework.md` (online: **[`/docs/scientific-to-cloud-architecture-framework.md`](/docs/scientific-to-cloud-architecture-framework.md)**).
+
 | Phase | Worklog Week | Technical Implementation Deliverable | Status |
 | :--- | :---: | :--- | :---: |
 | **Phase 1: Cloud Foundation & Day-0 Security** | Week 1 | AWS Account initialization, \$100 Credit activation, Billing Console setup. | **Completed** |
@@ -138,12 +140,12 @@ Inheriting the verified star schema from the quantitative finance data model:
 | | Week 4 | Multi-AZ Custom VPC architecture design and deployment (`10.10.0.0/16`). | **Completed** |
 | **Phase 2: Ingestion & Relational Metadata** | Week 5 | Deploy EC2 Data Ingestion Worker in Private Subnet, User Data automation, 20GB EBS cache volume, Key Pair recovery procedure. | **Completed** |
 | | Week 6 | Provision Amazon RDS PostgreSQL for `Dim_Asset` & `Dim_Date`, secure credentials with AWS Secrets Manager rotation. | **Completed** |
-| **Phase 3: Medallion Lakehouse & ETL** | Week 7 | S3 3-Tier Lakehouse setup (Bronze/Silver/Gold), S3 Gateway VPC Endpoint, strict bucket access policies. | *Planned* |
-| | Week 8 | Automated schema discovery via AWS Glue Data Catalog, PySpark Glue ETL for Parquet conversion & partitioning. | *Planned* |
-| **Phase 4: Serverless Analytics & Serving** | Week 9 | Quantitative SQL query optimization via Amazon Athena, CTAS modeling, >85% scan cost reduction benchmark. | *Planned* |
-| | Week 10 | Real-Time Financial Feature Store on Amazon DynamoDB (Single-Table Design), Python Boto3 SDK CRUD operations. | *Planned* |
-| **Phase 5: BI Dashboard, AI & Capstone Review** | Week 11 | Build Executive Financial Risk Dashboard on Amazon QuickSight connected to Athena/S3. | *Planned* |
-| | Week 12 | Generative AI market briefing with Bedrock/SageMaker, comprehensive FinOps cost audit, capstone handover. | *Planned* |
+| **Phase 3: Medallion Lakehouse & ETL** | Week 7 | S3 3-Tier Lakehouse setup (Bronze/Silver/Gold), S3 Gateway VPC Endpoint ($0 NAT cost), strict TLS 1.2+ bucket policies. | **Architecture Specification** |
+| | Week 8 | Automated schema discovery via AWS Glue Data Catalog, PySpark Glue ETL computing 18 lagged features with Zero Look-Ahead Bias. | **Architecture Specification** |
+| **Phase 4: Serverless Analytics & Serving** | Week 9 | Quantitative SQL query optimization via Amazon Athena, CTAS modeling, Partition Projection, >85% scan cost reduction benchmark. | **Architecture Specification** |
+| | Week 10 | Real-Time Financial Feature Store on Amazon DynamoDB (Single-Table Design), sub-10ms Python Boto3 SDK serving. | **Architecture Specification** |
+| **Phase 5: BI Dashboard, AI & Capstone Review** | Week 11 | Build Executive Financial Risk Dashboard on Amazon QuickSight connected to Athena/SPICE (25X/1V/0Đ Basel gauge & NAV tracking). | **Architecture Specification** |
+| | Week 12 | Generative AI market briefing with Amazon Bedrock Claude 3.5 Sonnet RAG, comprehensive FinOps cost audit (<$10/month), capstone handover. | **Architecture Specification** |
 
 ---
 
